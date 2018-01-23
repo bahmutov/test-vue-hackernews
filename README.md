@@ -185,3 +185,53 @@ The result shows the test going through the entire scenario, ensuring that so ma
 
 ![Comments and Top news](images/comments-and-top.gif)
 
+### Continuous Integration
+
+Running Cypress locally is great, but what about our continuous integration server? We want to execute the tests and see every failure somehow. Every CI provider is supported by Cypress - either right out of the box or through our [Docker images](https://github.com/cypress-io/cypress-docker-images), but we recommend using our [dashboard service](https://www.cypress.io/dashboard/) to store test results, screenshots and videos - it is the simplest setup ever. From the desktop click "Runs" button.
+
+![Runs](images/record.png)
+
+Each user by default gets own organization - or you can create new organization for your team. I will add new project under my own account and its results will be publicly visible.
+
+![Project recording](images/project-recording.png)
+
+The modal gives me the command to use on my CI server to execute the tests while recording the results on the dashboard. Copy the record key - we will keep it private. The simplest CI to setup for a public GitHub project is Travis. I added the record key I just copied as an environment variable.
+
+![Travis](images/travis-variable.png)
+
+The `.travis.yml` file executes `cypress run --record` command.
+
+```yml
+language: node_js
+node_js:
+  - '8'
+cache:
+  directories:
+    - ~/.npm
+    - node_modules
+script:
+  - $(npm bin)/cypress run --record
+```
+
+Push the code to GitHub and watch the tests [run on CI](https://travis-ci.org/bahmutov/vue-hackernews-2.0/builds/332310458). Now head over to the [Cypress Dashboard](https://dashboard.cypress.io/#/projects/b1sfu5/runs) and see test results nicely organized, including video of the entire run!
+
+![Project runs](images/runs.png)
+
+![Project run video](images/run.png)
+
+The entire setup took less than a minute.
+
+### Final thoughts
+
+Our Cypress team has put a lot of thought into designing the most developer-friendly end-to-end test runner. It includes [powerful API](https://on.cypress.io/api), [built-in recording](https://on.cypress.io/screenshots-and-videos), [simple CI setup](https://on.cypress.io/continuous-integration) and many [other features](https://www.cypress.io/features) that make the testing experience truly painless. We appreciate any feedback (positive and negative) through the usual channels: GitHub issues, Gitter chat and even Tweets.
+
+If you would like to try Cypress (and why not, it is free and open source!) follow these links
+
+- [github.com/cypress-io/cypress](https://github.com/cypress-io/cypress)
+- [Writing your first test](https://on.cypress.io/intro)
+- [Examples, tutorials, recipes](https://on.cypress.io/examples)
+- [Cypress channel on Gitter](https://gitter.im/cypress-io/cypress)
+
+If you want to try experimental code, we have built a Cypress plugin for unit testing Vue code. It is like a cross between end-to-end tests and [Storybook.js](https://storybook.js.org/). You can find it at [bahmutov/cypress-vue-unit-test](https://github.com/bahmutov/cypress-vue-unit-test).
+
+For Cypress updates, follow [@cypress_io](https://twitter.com/Cypress_io) on Twitter.
