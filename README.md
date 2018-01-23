@@ -155,13 +155,13 @@ it('cannot go to the previous page', () => {
 })
 ```
 
-The traditional rule of thumb tells developers to write small tests with a single assertion per test. But at Cypress we have invested a lot of time into [helpful error messages](https://www.cypress.io/blog/2017/07/26/good-error-messages/). Not only the test runner is going to tell exactly the reason why a test fails, on CI it will take a screenshot automatically! Plus video recording is turned on by default - thus you will _see_ the failure. So I feel comfortable testing entire scenarios rather than individual steps in my end-to-end tests.
+The traditional rule of thumb tells developers to write small tests with a single assertion per test. But at Cypress we have invested a lot of time into [helpful error messages](https://www.cypress.io/blog/2017/07/26/good-error-messages/). Not only the test runner is going to tell exactly the reason why a test fails, on CI it will take a screenshot automatically! Plus video recording is turned on by default - thus you will _see_ the steps leading to the failure. So I feel comfortable testing entire scenarios rather than individual actions.
 
-Here is another such scenario. There are comments for each news item. I should be able to click on the comments link, see comments, then go back to the main list. First, I need to know the selector of the comments link. Rather than "hunting" in the DevTools, I can click on "CSS Selector Playground" target icon and then on the desired item.
+Here is another such scenario. There are comments for each news item. I should be able to click on the comments link, read the comments, then go back to the main list. First, I need to know the selector of the comments link. Rather than "hunting" in the DevTools, I can click on "CSS Selector Playground" target icon and then on the desired item.
 
 ![CSS Selector Playground](images/selector-playground.png)
 
-The playground tool suggests a little cumbersome string `cy.get(':nth-child(1) > .meta > .comments-link > a')`, but we can split this a little into `cy.get('.news-item').first().find('.meta .comments-link')`. When we click on the link, we are going to the comments page. There is a (brief) loading spinner and then the comments appear. Finally, we can back to the "Top" news page by using navigation links.
+The playground tool suggests selector string `cy.get(':nth-child(1) > .meta > .comments-link > a')`, but we can split it up into `cy.get('.news-item').first().find('.meta .comments-link')`. When we click on the link, we are going to the comments page. There is a (brief) loading spinner and then the comments appear. Finally, we can go back to the "Top" news page by using a navigation link.
 
 ```js
 it('goes to comments and back', () => {
@@ -171,7 +171,7 @@ it('goes to comments and back', () => {
     .click()
   // loader disappears, and comments are there
   cy.get('.item-view-comments-header .spinner').should('not.be.visible')
-  // NOTE: there might be zero comments
+  // note: there might be zero comments
   cy.get('.comment')
     .should('have.length.gte', 0)
     .and('be.visible')
@@ -181,17 +181,17 @@ it('goes to comments and back', () => {
 })
 ```
 
-The result shows the test going through the entire scenario, ensuring that so many components of the app are working as expected.
+The result shows the test going through the entire scenario, ensuring that many components of the app are working as expected.
 
 ![Comments and Top news](images/comments-and-top.gif)
 
 ### Continuous Integration
 
-Running Cypress locally is great, but what about our continuous integration server? We want to execute the tests and see every failure somehow. Every CI provider is supported by Cypress - either right out of the box or through our [Docker images](https://github.com/cypress-io/cypress-docker-images), but we recommend using our [dashboard service](https://www.cypress.io/dashboard/) to store test results, screenshots and videos - it is the simplest setup ever. From the desktop click "Runs" button.
+Running Cypress locally is great, but what about our continuous integration server? We want to execute the tests and see every failure somehow. Every CI provider is supported by Cypress - either right out of the box or through the provided [Docker images](https://github.com/cypress-io/cypress-docker-images), but we recommend using our [dashboard service](https://www.cypress.io/dashboard/) to store test results, screenshots and videos. It is a quick setup. From the desktop click "Runs" button.
 
 ![Runs](images/record.png)
 
-Each user by default gets own organization - or you can create new organization for your team. I will add new project under my own account and its results will be publicly visible.
+Each user by default gets a personal organization - or you can create new organization for your team. I will add a new project under my own account, and its results will be publicly visible.
 
 ![Project recording](images/project-recording.png)
 
